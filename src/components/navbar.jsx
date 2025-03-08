@@ -3,11 +3,13 @@ import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { MyContext } from '../context/cartContext';
 import UserFooter from './userFooter';
 import WishList from '../pages/user/Modal/WishList';
+import OrderModal from '../pages/user/Modal/OrderModal';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [wishlistOpen, setWishlistOpen] = useState(false);
+  const [isOrderModalOpen, setisOrderModalOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const { cart, setIsLogged, isLogged, user } = useContext(MyContext);
   const navigate = useNavigate();
@@ -31,9 +33,12 @@ const Navbar = () => {
     // Close profile dropdown if open when toggling menu
     if (isProfileDropdownOpen) setIsProfileDropdownOpen(false);
   };
- 
+ const toggleOrder=()=>{
+  setIsProfileDropdownOpen(false);
+  setisOrderModalOpen(true);
+ }
   const toggleWishlist = () => {
-    setIsProfileDropdownOpen(!isProfileDropdownOpen);
+    setIsProfileDropdownOpen(false);
     setWishlistOpen(!wishlistOpen); // Toggle wishlist visibility
   };
   const toggleProfileDropdown = () => {
@@ -150,6 +155,8 @@ const Navbar = () => {
                   />
                 </div>
                 {wishlistOpen && <WishList modalClose={() => setWishlistOpen(false)} />}
+
+      {isOrderModalOpen && <OrderModal onClose={() => setisOrderModalOpen(false)} />}
                 {isProfileDropdownOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={toggleProfileDropdown}></div>
@@ -165,12 +172,12 @@ const Navbar = () => {
                           </svg>
                           <span>My Profile</span>
                         </Link>
-                        <Link to="/orders" className="flex items-center px-6 py-3 text-gray-700 hover:bg-orange-50 transition-colors">
+                        <span onClick={toggleOrder} className="flex items-center px-6 py-3 text-gray-700 hover:bg-orange-50 transition-colors">
                           <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                           </svg>
                           <span>My Orders</span>
-                        </Link>
+                        </span>
                         <span onClick={toggleWishlist} className="flex items-center px-6 py-3 text-gray-700 hover:bg-orange-50 transition-colors">
                           <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
@@ -316,7 +323,7 @@ const Navbar = () => {
               </li>
             )}
             
-            <li className="p-6 mt-2 bg-gradient-to-r from-orange-50 to-amber-50">
+            {/* <li className="p-6 mt-2 bg-gradient-to-r from-orange-50 to-amber-50">
               <a 
                 href="tel:+1234567890" 
                 className="flex items-center justify-center w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-medium py-3 px-4 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all duration-300 shadow-md"
@@ -327,7 +334,7 @@ const Navbar = () => {
                 </svg>
                 Call Us Now
               </a>
-            </li>
+            </li> */}
           </ul>
         </div>
       </nav>

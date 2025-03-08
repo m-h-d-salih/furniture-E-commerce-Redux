@@ -1,10 +1,18 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { MyContext } from "../../../context/cartContext";
-import { FaTrash } from "react-icons/fa";
+import WishlistSkeleton from "../../../components/skeleton/WishListSkeleton";
+import WishlistCard from "../../../components/WishListCard";
+
 
 const WishList = ({ modalClose }) => {
   const { cart: wishlist, removeCart } = useContext(MyContext);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <motion.div 
@@ -12,6 +20,7 @@ const WishList = ({ modalClose }) => {
       animate={{ opacity: 1 }} 
       exit={{ opacity: 0 }} 
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+      onClick={modalClose}
     >
       <motion.div 
         initial={{ y: 50, opacity: 0 }}
@@ -24,32 +33,16 @@ const WishList = ({ modalClose }) => {
           <button className="text-gray-600 hover:text-black" onClick={modalClose}>✖</button>
         </div>
 
-        {wishlist.length > 0 ? (
+        {loading ? (
+          <div className="space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <WishlistSkeleton key={i} />
+            ))}
+          </div>
+        ) : wishlist.length > 0 ? (
           <div className="space-y-4">
             {wishlist.map((item, index) => (
-              <motion.div 
-                key={index}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                className="flex items-center bg-gray-100 p-4 rounded-lg shadow"
-              >
-                <img
-                  className="w-16 h-16 object-cover rounded-md"
-                  src={item.urlimg}
-                  alt={item.title}
-                />
-                <div className="ml-4 flex-1">
-                  <h3 className="text-md font-semibold">{item.title}</h3>
-                  <p className="text-gray-600 text-sm">${item.price}</p>
-                </div>
-                <button
-                  className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-700"
-                  onClick={() => removeCart(item)}
-                >
-                  <FaTrash />
-                </button>
-              </motion.div>
+              <WishlistCard key={index} item={item} removeCart={removeCart} />
             ))}
           </div>
         ) : (
