@@ -6,6 +6,7 @@ import WishList from '../pages/user/Modal/WishList';
 import OrderModal from '../pages/user/Modal/OrderModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkUserLogin, getUser } from '../../redux/userSlice';
+import { getCart } from '../../redux/cartSlice';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,8 +14,9 @@ const Navbar = () => {
   const [wishlistOpen, setWishlistOpen] = useState(false);
   const [isOrderModalOpen, setisOrderModalOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-  const { cart, setIsLogged } = useContext(MyContext);
+  const {  setIsLogged } = useContext(MyContext);
   const {isLogged,user}=useSelector(state=>state.user);
+  const {cart}=useSelector(state=>state.cart);
  
   const dispatch=useDispatch();
   const navigate = useNavigate();
@@ -24,6 +26,7 @@ useEffect(()=>{
   if(role){
     dispatch(checkUserLogin())
     dispatch(getUser({id}))
+    dispatch(getCart(id))
 }
 },[dispatch])
   // Handle scroll effect for navbar
@@ -174,16 +177,16 @@ useEffect(()=>{
                     <div className="fixed inset-0 z-40" onClick={toggleProfileDropdown}></div>
                     <div className="absolute right-0 mt-3 w-72 bg-white rounded-xl shadow-2xl z-50 overflow-hidden transition-all duration-300 transform origin-top-right ring-1 ring-orange-100">
                       <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-orange-50 to-amber-50">
-                        <p className="font-bold text-gray-900 text-lg">{user?.name || 'Welcome Back!'}</p>
+                        <p className="font-bold text-gray-900 text-lg">{user?.name[0].toUpperCase()+user?.name.slice(1) || 'Welcome Back!'}</p>
                         <p className="text-sm text-gray-600 truncate mt-1">{user?.email || ''}</p>
                       </div>
                       <div className="py-2">
-                        <Link to="/profile" className="flex items-center px-6 py-3 text-gray-700 hover:bg-orange-50 transition-colors">
+                        {/* <Link to="/profile" className="flex items-center px-6 py-3 text-gray-700 hover:bg-orange-50 transition-colors">
                           <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                           </svg>
                           <span>My Profile</span>
-                        </Link>
+                        </Link> */}
                         <span onClick={toggleOrder} className="flex items-center px-6 py-3 text-gray-700 hover:bg-orange-50 transition-colors">
                           <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>

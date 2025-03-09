@@ -2,14 +2,14 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../src/API/axiosInterceptor";
 
 
-export const getAllProducts=createAsyncThunk('get/products',async()=>{
+export const getAllProducts=createAsyncThunk('get/products',async(_,{ rejectWithValue })=>{
     
     try {
         const response=await axiosInstance.get(`/user/products`);
         
         return response.data;
     } catch (error) {
-        console.log(error)
+        return rejectWithValue(error.response?.data || "Failed to fetch products");
     }
 })
 const initialState={

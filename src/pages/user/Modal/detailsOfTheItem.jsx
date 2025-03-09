@@ -1,12 +1,13 @@
 import React, { useContext } from "react";
-import { MyContext } from "../../../context/cartContext";
 import toast from "react-hot-toast";
 import { FaShoppingCart, FaTimes } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../../../redux/cartSlice";
 
 function ItemDetails({ isOpen, modalclose, item }) {
-  const { addToCart } = useContext(MyContext);
-
+  const id=localStorage.getItem(`id`)
+  const dispatch=useDispatch();
   if (!isOpen || !item) return null;
 
   return (
@@ -34,15 +35,15 @@ function ItemDetails({ isOpen, modalclose, item }) {
         <div className="md:w-1/2">
           <img
             className="w-full h-64 md:h-full object-cover rounded-l-xl"
-            src={item.urlimg}
-            alt={item.title}
+            src={item.url}
+            alt={item.name}
           />
         </div>
 
         {/* Content Section */}
         <div className="md:w-1/2 p-6 flex flex-col justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">{item.title}</h2>
+            <h2 className="text-2xl font-bold text-gray-900">{item.name}</h2>
             <p className="text-lg font-semibold text-blue-700 mt-1">${item.price}</p>
             <p className="text-sm text-gray-800 leading-relaxed max-h-32 overflow-y-auto mt-2">
               {item.description || "No description available."}
@@ -56,8 +57,8 @@ function ItemDetails({ isOpen, modalclose, item }) {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => {
-                addToCart(item);
-                toast.success(`Item added to cart`);
+               dispatch( addToCart({id,item}));
+               
                 modalclose();
               }}
             >
