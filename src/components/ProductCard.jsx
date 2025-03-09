@@ -1,8 +1,12 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { FaHeart, FaShoppingCart } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../../redux/cartSlice";
 
-function ProductCard({ item, index, hoveredIndex, setHoveredIndex, modalopen, addToCart }) {
+function ProductCard({ item, index, hoveredIndex, setHoveredIndex, modalopen }) {
+  const {id}=useSelector(state=>state.user);
+  const dispatch=useDispatch();
   return (
     <motion.div
       className="relative bg-white shadow-lg rounded-xl overflow-hidden cursor-pointer transform transition-transform duration-500 hover:scale-105 w-full max-w-[400px]"
@@ -12,11 +16,11 @@ function ProductCard({ item, index, hoveredIndex, setHoveredIndex, modalopen, ad
     >
       <img
         className="w-full h-60 sm:h-72 object-cover rounded-t-xl"
-        src={item.urlimg}
-        alt={item.title}
+        src={item.url}
+        alt={item.name}
       />
       <div className="p-4 sm:p-6">
-        <h2 className="text-lg font-bold text-gray-800">{item.title}</h2>
+        <h2 className="text-lg font-bold text-gray-800">{item.name}</h2>
         <p className="text-lg sm:text-xl font-semibold text-blue-600">$ {item.price}</p>
       </div>
 
@@ -34,8 +38,8 @@ function ProductCard({ item, index, hoveredIndex, setHoveredIndex, modalopen, ad
               whileTap={{ scale: 0.9 }}
               onClick={(e) => {
                 e.stopPropagation();
-                addToCart(item);
-                toast.success(`Item added to cart`);
+               dispatch(addToCart({id,item}));
+                
               }}
             >
               <FaShoppingCart size={22} />

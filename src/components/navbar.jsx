@@ -4,6 +4,8 @@ import { MyContext } from '../context/cartContext';
 import UserFooter from './userFooter';
 import WishList from '../pages/user/Modal/WishList';
 import OrderModal from '../pages/user/Modal/OrderModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { checkUserLogin, getUser } from '../../redux/userSlice';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,9 +13,19 @@ const Navbar = () => {
   const [wishlistOpen, setWishlistOpen] = useState(false);
   const [isOrderModalOpen, setisOrderModalOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-  const { cart, setIsLogged, isLogged, user } = useContext(MyContext);
+  const { cart, setIsLogged } = useContext(MyContext);
+  const {isLogged,user}=useSelector(state=>state.user);
+ 
+  const dispatch=useDispatch();
   const navigate = useNavigate();
-
+  const role=localStorage.getItem('role');
+  const id=localStorage.getItem('id');
+useEffect(()=>{
+  if(role){
+    dispatch(checkUserLogin())
+    dispatch(getUser({id}))
+}
+},[dispatch])
   // Handle scroll effect for navbar
   useEffect(() => {
     const handleScroll = () => {

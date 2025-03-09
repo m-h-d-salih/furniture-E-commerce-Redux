@@ -16,7 +16,7 @@ const Userhome = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-gray-100">
+    <div className="bg-gray-100 mt-10">
       {/* Hero Section */}
       <div
         className="relative h-screen flex flex-col items-center justify-center text-white bg-cover bg-center"

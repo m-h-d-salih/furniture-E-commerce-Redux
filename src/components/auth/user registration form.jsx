@@ -38,10 +38,22 @@ function UserRegistrationForm() {
              
             }}
             validationSchema={validationSchema}
-            onSubmit={(values, { setSubmitting }) => {
+            onSubmit={async(values, { setSubmitting }) => {
               
-            const {confirmPassword,...rest}=values;
-            
+              const {confirmPassword,...rest}=values;
+           try {
+           
+            const response=await axiosInstance.post(`/user/register`,rest)
+            const {message}=response.data;
+            toast.success(message)
+            setTimeout(()=>{
+              navigate('/login')
+            },3000)
+           } catch (error) {
+            const {message='something went wronng'}=error?.response?.data;
+            toast.error(message)
+            // console.log(error?.response?.data)
+           }
               
               setSubmitting(false);
             }}

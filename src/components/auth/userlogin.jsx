@@ -6,6 +6,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
 import { MyContext } from "../../context/cartContext";
+import axiosInstance from "../../API/axiosInterceptor";
+import { useDispatch } from "react-redux";
+import { checkUserLogin } from "../../../redux/userSlice";
 
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email address").required("Required"),
@@ -16,7 +19,8 @@ const validationSchema = Yup.object({
 
 function UserLoginForm() {
   const navigate = useNavigate();
-  const {setIsLogged,isLogged}=useContext(MyContext)
+  const {setIsLogged,isLogged}=useContext(MyContext);
+  const dispatch=useDispatch();
 
   return (
     <>
@@ -31,49 +35,33 @@ function UserLoginForm() {
           <Formik
             initialValues={{ email: "", password: "" }}
             validationSchema={validationSchema}
-            onSubmit={(values, { setSubmitting }) => {
-              axios
-                .get(`http://localhost:8000/user`)
-                .then((res) => {
-                  // let admin=false;
-                  // if(values.email === 'admin@gmail.com' && values.password === 'iamadmin')
-                  // {
-                  //   admin=true;
-                  // }
-                  const admindata=res.data.find(item=>values.email === 'admin@gmail.com' && values.password === 'iamadmin');
-                  const findeddata = res.data.find(item => item.email === values.email && item.password === values.password);
-                  const existData = res.data.find(item => item.email === values.email && item.password !== values.password);
-                  if(admindata)
-                  {
-                    toast.success('welcome admin');
-                    localStorage.setItem('id', admindata.id);
-                    setIsLogged(true);
-                    // console.log(isLogged);
-                    setTimeout(() =>
-                       navigate("/admin")
-                    , 1000);
-                  }
-                  else if (findeddata) {
-                    toast.success('Login successful');
-                    localStorage.setItem('id', findeddata.id);
-                    setIsLogged(true);
-                    // console.log(isLogged);
-                    setTimeout(() => navigate("/"), 1000);
-                  } else if (existData) {
-                    toast.error('Enter your password correctly');
-                  } else {
-                    toast('OOPS! You don\'t have an account', {
-                      icon: '😬',
-                    });
+            onSubmit={async(values, { setSubmitting }) => {
+             try {
+              const reponse=await axiosInstance.post('/user/login',values);
+             
+              const {message,user,token}=reponse.data;
+              toast.success(message);
+              dispatch(checkUserLogin(user));
+              localStorage.setItem('role',user.role);
+              localStorage.setItem('id',user.id);
+              localStorage.setItem('token',token);
+              if(user.role==='admin'){
+                setTimeout(()=>{
+                  navigate('/admin');
+                },3000);
+              }else{
 
-                    
-                    setTimeout(() => navigate("/signup"), 1000);
-                  }
-                })
-                .catch((error) => console.log("error", error))
-                .finally(() => {
-                  setSubmitting(false);
-                });
+                setTimeout(()=>{
+                  navigate('/');
+                },3000);
+              }
+             } catch (error) {
+              console.log(error)
+              const {message='something went wrong'}=error?.response?.data;
+              toast.error(message)
+             }finally{
+              setSubmitting(false);
+             }
             }}
           >
             {({
