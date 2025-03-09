@@ -3,6 +3,7 @@ import { FaHeart, FaShoppingCart } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../redux/cartSlice";
+import { addToWishlist } from "../../redux/wishlistSlice";
 
 function ProductCard({ item, index, hoveredIndex, setHoveredIndex, modalopen }) {
   const {id}=useSelector(state=>state.user);
@@ -48,6 +49,11 @@ function ProductCard({ item, index, hoveredIndex, setHoveredIndex, modalopen }) 
               className="text-red-500 text-2xl hover:text-red-700 transition-all duration-500"
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}
+              onClick={(e) => {
+                e.stopPropagation();
+               dispatch(addToWishlist({id,item}));
+                
+              }}
             >
               <FaHeart />
             </motion.button>
