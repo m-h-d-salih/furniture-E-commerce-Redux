@@ -15,13 +15,14 @@ const Navbar = () => {
   const [isOrderModalOpen, setisOrderModalOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const {  setIsLogged } = useContext(MyContext);
-  const {isLogged,user}=useSelector(state=>state.user);
-  const {cart}=useSelector(state=>state.cart);
+  const {isLogged,user=[]}=useSelector(state=>state.user);
+  const {cart=[]}=useSelector(state=>state.cart);
  
   const dispatch=useDispatch();
   const navigate = useNavigate();
   const role=localStorage.getItem('role');
   const id=localStorage.getItem('id');
+  
 useEffect(()=>{
   if(role){
     dispatch(checkUserLogin())

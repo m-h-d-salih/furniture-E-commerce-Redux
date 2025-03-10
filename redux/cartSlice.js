@@ -72,7 +72,7 @@ const cartSlice=createSlice({
         .addCase(getCart.pending,(state)=>{
             state.isLoading=true;
         })
-        .addCase(getCart.rejected,(state)=>{
+        .addCase(getCart.rejected,(state,action)=>{
             state.isError=true;
             state.isLoading=false;
             toast.error(action.payload)

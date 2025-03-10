@@ -10,7 +10,7 @@ import { getAllProducts } from "../../../redux/productSlice";
 function UserShop() {
   // const { addToCart  } = useContext(MyContext);
   // const {addToCart}=useSelector(state=>state.cart);
-  const {products,isLoading}=useSelector(state=>state.product)
+  const {products=[],isLoading}=useSelector(state=>state.product)
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -22,7 +22,7 @@ const dispatch=useDispatch();
 
     dispatch(getAllProducts());
   }, [dispatch]);
-
+console.log(products)
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };

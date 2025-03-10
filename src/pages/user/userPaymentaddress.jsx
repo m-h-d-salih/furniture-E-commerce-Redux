@@ -1,18 +1,29 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { MyContext } from "../../context/cartContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaCheckCircle } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import axiosInstance from "../../API/axiosInterceptor";
 
 const UserPaymentAddress = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const id = localStorage.getItem("id");
-  const { cart, setCart, order, setOrder } = useContext(MyContext);
+  const {cart=[]}=useSelector(state=>state.cart);
   const navigate = useNavigate();
+  const Subtotal=cart?.reduce((acc, item) => acc + item.productId.price * item.quantity, 0);
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
 
+    return () => {
+        document.body.removeChild(script);
+    };
+}, []);
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -36,25 +47,80 @@ const UserPaymentAddress = () => {
         .max(16, "Must be exactly 16 digits")
         .required("Required"),
     }),
-    onSubmit: (values) => {
-      const neworder = {
-        cartitems: cart,
-        totalprice: cart.reduce((acc, item) => acc + item.price * item.quantity, 0),
-        email: values.email,
-        address: values.address,
-        phone: values.phone,
-        orderDate: new Date().toString(),
-      };
+    onSubmit: async(values) => {
+      // const neworder = {
+      //   cartitems: cart,
+      //   totalprice: cart.reduce((acc, item) => acc + item.productId.price * item.quantity, 0),
+      //   email: values.email,
+      //   address: values.address,
+      //   phone: values.phone,
+      //   orderDate: new Date().toString(),
+      // };
 
-      let allorder = [...order, neworder];
-      axios
-        .patch(`http://localhost:8000/user/${id}`, { order: allorder, cart: [] })
-        .then(() => {
-          toast.success("Payment successful");
-          setTimeout(() => {
-            navigate(`/shop`);
-          }, 1000);
+      // let allorder = [...order, neworder];
+      try {
+        const response = await axiosInstance.post(`/user/payment/${id}`, {
+            currency: "INR",
+            amount: Subtotal * 100,
         });
+        // console.log(response);
+        
+        if (response.data.success) {
+            const options = {
+                key: "rzp_test_wL1B6IUAUSnQqu", // Replace with live key in production
+                amount: Subtotal * 100,
+                currency: "INR",
+                name: "Wooden-ecommerce",
+                description: "Test Transaction",
+                image: "https://your-domain.com/path-to-your-image/logo.png", // Use absolute path for image
+                order_id: response.data.data.id,
+                handler: async function (response) {
+                    const verificationResponse = await axiosInstance.post(
+                        `/user/paymentverification/${id}`,
+                        {
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature,
+                        }
+                    );
+                    if (verificationResponse?.data?.success) {
+                      
+                        toast.success(`You Paid ₹${Subtotal} Successfully`);
+                        navigate("/shop");
+                    } else {
+                        toast.error("Payment verification failed");
+                    }
+                },
+                // prefill: {
+                //     name: user?.username,
+                //     email: user?.email,
+                //     contact: user?.contact,
+                // },
+                // notes: {
+                //     address: user?.address,
+                //     pincode: user?.pincode,
+                // },
+                // theme: {
+                //     color: "#3399cc",
+                // },
+            };
+
+            const rzp1 = new window.Razorpay(options);
+            rzp1.on("payment.failed", function (response) {
+                alert(`Payment failed: ${response.error.description}`);
+            });
+            rzp1.open();
+        } else {
+            toast.error("Failed to create payment order");
+        }
+    } catch (error) {
+        if (error?.response && error?.response?.status === 404) {
+            toast.error("Cart is empty");
+        } else {
+            console.error("Payment Creation Failed:", error);
+            toast.error("Payment Creation Failed. Please try again.");
+        }
+    }
     },
   });
 
@@ -86,16 +152,16 @@ const UserPaymentAddress = () => {
         <div>
           <label className="mb-2 mt-2 block text-blue-700">TOTAL PRICE:</label>
           <div className="text-center text-2xl font-bold text-blue-700">$
-            {cart.reduce((acc, item) => acc + item.quantity * item.price, 0)}
+            {Subtotal}
           </div>
         </div>
         <div className="max-h-64 overflow-y-auto">
           {cart.map((item, index) => (
             <div key={index} className="mb-2 border border-blue-400 p-3 bg-blue-50">
-              <p><strong>Product:</strong> {item.title}</p>
+              <p><strong>Product:</strong> {item.productId?.name}</p>
               <p><strong>Quantity:</strong> {item.quantity}</p>
-              <p><strong>Price:</strong> ${item.price}</p>
-              <p><strong>Total:</strong> ${item.price * item.quantity}</p>
+              <p><strong>Price:</strong> ${item.productId?.price}</p>
+              <p><strong>Total:</strong> ${item.productId?.price * item.quantity}</p>
             </div>
           ))}
         </div>
