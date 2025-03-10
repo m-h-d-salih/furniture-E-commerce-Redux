@@ -22,7 +22,6 @@ const dispatch=useDispatch();
 
     dispatch(getAllProducts());
   }, [dispatch]);
-console.log(products)
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
