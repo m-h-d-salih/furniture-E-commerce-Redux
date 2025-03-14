@@ -56,7 +56,6 @@ function UserLoginForm() {
                 },3000);
               }
              } catch (error) {
-              console.log(error)
               const {message='something went wrong'}=error?.response?.data;
               toast.error(message)
              }finally{
