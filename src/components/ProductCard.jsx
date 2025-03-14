@@ -39,8 +39,10 @@ function ProductCard({ item, index, hoveredIndex, setHoveredIndex, modalopen }) 
               whileTap={{ scale: 0.9 }}
               onClick={(e) => {
                 e.stopPropagation();
+                if(id)
                dispatch(addToCart({id,item}));
-                
+              else
+                toast(`you need to login first`);
               }}
             >
               <FaShoppingCart size={22} />
@@ -51,8 +53,10 @@ function ProductCard({ item, index, hoveredIndex, setHoveredIndex, modalopen }) 
               whileTap={{ scale: 0.9 }}
               onClick={(e) => {
                 e.stopPropagation();
+                if(id)
                dispatch(addToWishlist({id,item}));
-                
+              else
+                toast(`you need to login first`);
               }}
             >
               <FaHeart />

@@ -59,7 +59,7 @@ const cartSlice=createSlice({
         .addCase(getWishlist.pending,(state)=>{
             state.isLoading=true;
         })
-        .addCase(getWishlist.rejected,(state)=>{
+        .addCase(getWishlist.rejected,(state,action)=>{
             state.isError=true;
             state.isLoading=false;
             toast.error(action.payload)
@@ -69,7 +69,7 @@ const cartSlice=createSlice({
           state.wishlist=products;
     }).addCase(addToWishlist.rejected,(state,action)=>{
         state.isPending=false;
-        toast.error(action.payload)
+        toast.error(action.payload )
     })
     .addCase(addToWishlist.pending,(state,action)=>{
         state.isPending=true

@@ -16,18 +16,18 @@ const CartProvider = ({ children }) => {
   const [revenue, setRevenue] = useState(0);
 
   useEffect(()=>{
-    axios.get(`http://localhost:8000/products`)
-    .then(res=>setProducts(res.data))
+    // axios.get(`http://localhost:8000/products`)
+    // .then(res=>setProducts(res.data))
       
     },[])
   useEffect(()=>{
-    axios.get(`http://localhost:8000/user/${id}`)
-    .then(res=>setUser(res.data))
+    // axios.get(`http://localhost:8000/user/${id}`)
+    // .then(res=>setUser(res.data))
       
     },[])
   useEffect(()=>{
-    axios.get(`http://localhost:8000/user/${id}`)
-    .then(res=>setOrder(res.data.order))
+    // axios.get(`http://localhost:8000/user/${id}`)
+    // .then(res=>setOrder(res.data.order))
       
     },[])
     useEffect(() => {
@@ -42,42 +42,51 @@ const CartProvider = ({ children }) => {
   
     // console.log(revenue);
   useEffect(() => {
-    axios
-      .get(`http://localhost:8000/user/${id}`)
-      .then((res) => {
-        // console.log(res.data.cart);
-        setCart(res.data.cart);
-      })
-      .catch((error) => console.log(error));
+    // axios
+    //   .get(`http://localhost:8000/user/${id}`)
+    //   .then((res) => {
+    //     // console.log(res.data.cart);
+    //     setCart(res.data.cart);
+    //   })
+    //   .catch((error) => {
+    //     // console.log(error)
+    //   });
   }, []);
   const totalprice = cart.reduce((acc, item) => acc + item, 0);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:8000/user`)
-      .then((res) => {
-        // console.log(res.data);
-        setUsers(res.data);
-      })
-      .catch((error) => console.log(error));
+    // axios
+    //   .get(`http://localhost:8000/user`)
+    //   .then((res) => {
+    //     // console.log(res.data);
+    //     setUsers(res.data);
+    //   })
+    //   .catch((error) => {
+        
+    //     // console.log(error)
+    //   });
   }, []);
   useEffect(() => {
-    axios
-      .get(`http://localhost:8000/user`)
-      .then((res) => {
-        const mapedorder = res.data.filter((item) => item.order.length > 0);
-        // console.log(mapedorder.length);
-        setOrderlist(mapedorder);
-      })
-      .catch((error) => console.log("error"));
+    // axios
+    //   .get(`http://localhost:8000/user`)
+    //   .then((res) => {
+    //     const mapedorder = res.data.filter((item) => item.order.length > 0);
+    //     // console.log(mapedorder.length);
+    //     setOrderlist(mapedorder);
+    //   })
+    //   .catch((error) => {
+    //     // console.log("error")
+    //   });
   }, []);
   useEffect(() => {
-    axios
-      .get(`http://localhost:8000/products`)
-      .then((res) => {
-        setProductslist(res.data);
-      })
-      .catch((error) => console.log(error));
+    // axios
+    //   .get(`http://localhost:8000/products`)
+    //   .then((res) => {
+    //     setProductslist(res.data);
+    //   })
+    //   .catch((error) => {
+    //     // console.log(error)
+    //   });
   }, []);
   const removeproduct = (product) => {
     const removedproduct = productslist.filter((item) => item.id != product.id);
@@ -116,7 +125,9 @@ const CartProvider = ({ children }) => {
     axios
       .patch(`http://localhost:8000/user/${id}`, { cart: updatedCart })
       .then((res) => console.log("done"))
-      .catch((error) => console.log(error));
+      .catch((error) => {
+
+      });
   };
   const removeCart = (product) => {
     const newList = cart.filter((item) => product.id !== item.id);
@@ -125,7 +136,9 @@ const CartProvider = ({ children }) => {
     axios
       .patch(`http://localhost:8000/user/${id}`, { cart: newList })
       .then((res) => console.log("done"))
-      .catch((error) => console.log(error));
+      .catch((error) => {
+
+      });
   };
   const updateQuantity = (product, num) => {
     if (num == -1 && product.quantity === 1) return;
@@ -140,14 +153,15 @@ const CartProvider = ({ children }) => {
     // const deleteduser=users.filter(item=>item.id!=userId)
     axios
       .delete(`http://localhost:8000/user/${userId}`)
-      .then((res) => console.log("done"))
-      .catch((error) => console.log("error"));
+      .then((res) => {
+
+      })
+      .catch((error) => {
+
+      });
     setUsers(users.filter((item) => item.id != userId));
   };
-  const editProduct = () => {
-    
 
-  };
 
   // console.log(cart);
 

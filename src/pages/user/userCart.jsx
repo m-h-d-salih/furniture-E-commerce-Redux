@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MyContext } from "../../context/cartContext";
 import CartSkeleton from "../../components/skeleton/CartSkeleton";
 import CartItem from "../../components/CartItem";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,16 +7,18 @@ import { getCart } from "../../../redux/cartSlice";
 
 
 function UserCart() {
-  const {  removeCart, updateQuantity } = useContext(MyContext);
-  const {cart,isLoading}=useSelector(state=>state.cart);
+  const {cart=[],isLoading}=useSelector(state=>state.cart);
   const id=localStorage.getItem('id')
   const navigate = useNavigate();
 const dispatch=useDispatch();
   useEffect(() => {
-    dispatch(getCart(id))
-  }, [dispatch]);
+    if(id){
 
-  const totalAmount = cart.reduce((acc, item) => acc + item.quantity * item.productId.price, 0);
+      dispatch(getCart(id))
+    }
+  }, []);
+
+  const totalAmount = cart?.reduce((acc, item) => acc + item?.quantity * item?.productId.price, 0);
 
   return (
     <div className="min-h-screen mt-10 bg-gradient-to-r from-gray-50 to-gray-200 py-12 px-6 lg:px-12">
@@ -31,16 +32,14 @@ const dispatch=useDispatch();
         </div>
       ) : cart.length > 0 ? (
         <div className="space-y-6">
-          {cart.map((item, index) => (
-            <CartItem key={index} item={item.productId} quantity={item.quantity} updateQuantity={updateQuantity} removeCart={removeCart} />
+          {cart?.map((item, index) => (
+            <CartItem key={index} item={item?.productId} quantity={item?.quantity}   />
           ))}
         </div>
       ) : (
         <p className="text-red-600 text-2xl text-center mt-20">Your cart is empty</p>
       )}
-{/* {
-  cart.map(item=>console.log(item))
-} */}
+
       {cart.length > 0 && !isLoading && (
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-white shadow-md flex justify-between items-center">
           <span className="text-lg font-bold">Total Price: ${totalAmount}</span>

@@ -21,7 +21,7 @@ function UserLoginForm() {
   const navigate = useNavigate();
   const {setIsLogged,isLogged}=useContext(MyContext);
   const dispatch=useDispatch();
-
+  const role=import.meta.env.VITE_roleProtectKey;
   return (
     <>
       <Toaster />
@@ -42,15 +42,15 @@ function UserLoginForm() {
               const {message,user,token}=reponse.data;
               toast.success(message);
               dispatch(checkUserLogin(user));
-              localStorage.setItem('role',user.role);
               localStorage.setItem('id',user.id);
               localStorage.setItem('token',token);
               if(user.role==='admin'){
+                localStorage.setItem('role',role);
                 setTimeout(()=>{
                   navigate('/admin');
                 },3000);
               }else{
-
+                localStorage.setItem('role',user.role);
                 setTimeout(()=>{
                   navigate('/');
                 },3000);

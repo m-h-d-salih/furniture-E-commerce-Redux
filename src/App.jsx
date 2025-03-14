@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import "./App.css";
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 // import Userregistrationform from "./user folder/user registration/user registration form";
 import Userloginform from "./components/auth/userlogin";
 
@@ -27,7 +27,7 @@ import Contact from "./pages/user/Contact";
 // import CartProvider from "./context/cartContext";
 
 function App() {
-
+const role=import.meta.env.VITE_roleProtectKey;
   return (
     <>
     <Toaster/>
@@ -47,12 +47,16 @@ function App() {
           <Route path="login" element={<Userloginform />} />
           {/* <Route path="payment" element={<UserPayment />} /> */}
           <Route path="paymentaddress" element={<UserPaymentAddress/>}/>
+{role===localStorage.getItem('role')?(
 
           <Route path="admin" element={<Adminnavbar/>}>
              <Route index element={<AdminHome/>}/>
              <Route path="admin/users" element={<Userlist/>}/>
              <Route path="admin/products" element={<AdminProducts/>}/>
          </Route>
+):(
+  <Route path="/admin/*" element={<Navigate to="/" />} />
+)}
         </Routes>
       </BrowserRouter>
       {/* </CartProvider> */}

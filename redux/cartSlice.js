@@ -20,7 +20,6 @@ export const getCart=createAsyncThunk('get/cart',async(id,{ rejectWithValue })=>
     
     try {
         const response=await axiosInstance.get(`/user/cart/${id}`);
-        
         return response.data;
     } catch (error) {
         return rejectWithValue(error.response?.data || "Failed to get  cart");

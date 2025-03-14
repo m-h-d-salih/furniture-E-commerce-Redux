@@ -57,8 +57,10 @@ function ItemDetails({ isOpen, modalclose, item }) {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => {
+                if(id)
                dispatch( addToCart({id,item}));
-               
+               else
+               toast(`you need to login first`)
                 modalclose();
               }}
             >

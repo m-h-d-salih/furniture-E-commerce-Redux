@@ -61,7 +61,8 @@ const UserPaymentAddress = () => {
       try {
         const response = await axiosInstance.post(`/user/payment/${id}`, {
             currency: "INR",
-            amount: Subtotal * 100,
+            amount: Subtotal ,
+           
         });
         // console.log(response);
         
@@ -81,6 +82,9 @@ const UserPaymentAddress = () => {
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_signature: response.razorpay_signature,
+                            email: values.email,
+                            name: values.name,
+                            phone: values.phone,
                         }
                     );
                     if (verificationResponse?.data?.success) {

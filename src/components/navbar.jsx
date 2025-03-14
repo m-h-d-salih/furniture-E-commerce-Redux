@@ -22,9 +22,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const role=localStorage.getItem('role');
   const id=localStorage.getItem('id');
-  
 useEffect(()=>{
-  if(role){
+  if(role && id){
     dispatch(checkUserLogin())
     dispatch(getUser({id}))
     dispatch(getCart(id))
@@ -178,7 +177,7 @@ useEffect(()=>{
                     <div className="fixed inset-0 z-40" onClick={toggleProfileDropdown}></div>
                     <div className="absolute right-0 mt-3 w-72 bg-white rounded-xl shadow-2xl z-50 overflow-hidden transition-all duration-300 transform origin-top-right ring-1 ring-orange-100">
                       <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-orange-50 to-amber-50">
-                        <p className="font-bold text-gray-900 text-lg">{user?.name[0].toUpperCase()+user?.name.slice(1) || 'Welcome Back!'}</p>
+                        <p className="font-bold text-gray-900 text-lg">{user.length>0?user?.name[0]?.toUpperCase()+user?.name.slice(1) : 'Welcome Back!'}</p>
                         <p className="text-sm text-gray-600 truncate mt-1">{user?.email || ''}</p>
                       </div>
                       <div className="py-2">
