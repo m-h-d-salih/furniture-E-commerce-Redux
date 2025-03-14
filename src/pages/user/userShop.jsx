@@ -72,7 +72,7 @@ const dispatch=useDispatch();
               modalopen={modalopen}
               // addToCart={addToCart}
             />
-          ))
+          )) 
         )}
       </div>
 
